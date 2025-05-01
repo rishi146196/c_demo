@@ -3,11 +3,10 @@ pipeline {
         label 'docker'
     }
 
-   environment {
-    IMAGE_NAME = "c_demo"
-    DOCKER_REGISTRY = "rushikesh196/c_demo"
-   }
-
+    environment {
+        IMAGE_NAME = "c_demo"  // Ensure lowercase
+        DOCKER_REGISTRY = "rushikesh196/c_demo"
+    }
 
     stages {
         stage('Checkout') {
