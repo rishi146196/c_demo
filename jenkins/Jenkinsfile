@@ -4,14 +4,14 @@ pipeline {
     }
 
     environment {
-        IMAGE_NAME = "C_demo"
-        DOCKER_REGISTRY = "rushikesh196/C_demo"
+        IMAGE_NAME = "c_demo"
+        DOCKER_REGISTRY = "rushikesh196/c_demo"
     }
 
     stages {
         stage('Checkout') {
             steps {
-                git 'https://github.com/rishi146196/C_demo.git'
+                git 'https://github.com/rishi146196/c_demo.git'
             }
         }
 
