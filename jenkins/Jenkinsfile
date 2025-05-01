@@ -1,7 +1,7 @@
 pipeline {
     agent {
-    label 'docker'
-}
+        label 'docker'
+    }
 
     environment {
         IMAGE_NAME = "C_demo"
@@ -17,7 +17,7 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                bat 'docker build -t $IMAGE_NAME .'
+                bat 'docker build -t %IMAGE_NAME% .'
             }
         }
 
@@ -25,9 +25,9 @@ pipeline {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
                     bat '''
-                    echo $PASSWORD | docker login -u $USERNAME --password-stdin
-                    docker tag $IMAGE_NAME $DOCKER_REGISTRY
-                    docker push $DOCKER_REGISTRY
+                    echo %PASSWORD% | docker login -u %USERNAME% --password-stdin
+                    docker tag %IMAGE_NAME% %DOCKER_REGISTRY%
+                    docker push %DOCKER_REGISTRY%
                     '''
                 }
             }
@@ -35,8 +35,8 @@ pipeline {
 
         stage('Deploy to Kubernetes') {
             steps {
-                bat 'kubectl apply -f k8s/deployment.yaml'
-                bat 'kubectl apply -f k8s/service.yaml'
+                bat 'kubectl apply -f k8s\\deployment.yaml'
+                bat 'kubectl apply -f k8s\\service.yaml'
             }
         }
     }
