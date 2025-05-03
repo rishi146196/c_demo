@@ -1,10 +1,10 @@
 pipeline {
     agent {
-        label 'docker'
+        label 'linux-docker' // Make sure this label points to your Ubuntu/WSL Jenkins agent
     }
 
     environment {
-        IMAGE_NAME = "c_demo"  // Ensure lowercase
+        IMAGE_NAME = "c_demo"
         DOCKER_REGISTRY = "rushikesh196/c_demo"
     }
 
@@ -17,17 +17,17 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                bat 'docker build -t %IMAGE_NAME% .'
+                sh 'docker build -t $IMAGE_NAME .'
             }
         }
 
         stage('Push to Docker Hub') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-                    bat '''
-                    echo %PASSWORD% | docker login -u %USERNAME% --password-stdin
-                    docker tag %IMAGE_NAME% %DOCKER_REGISTRY%
-                    docker push %DOCKER_REGISTRY%
+                    sh '''
+                    echo $PASSWORD | docker login -u $USERNAME --password-stdin
+                    docker tag $IMAGE_NAME $DOCKER_REGISTRY
+                    docker push $DOCKER_REGISTRY
                     '''
                 }
             }
@@ -35,8 +35,8 @@ pipeline {
 
         stage('Deploy to k8s') {
             steps {
-                bat 'k3s kubectl apply -f k8s\\deployment.yaml'
-                bat 'k3s kubectl apply -f k8s\\service.yaml'
+                sh 'sudo k3s kubectl apply -f k8s/deployment.yaml'
+                sh 'sudo k3s kubectl apply -f k8s/service.yaml'
             }
         }
     }
