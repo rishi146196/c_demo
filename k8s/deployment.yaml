@@ -1,19 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: c_demo
+  name: c-demo
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: c_demo
+      app: c-demo
   template:
     metadata:
       labels:
-        app: c_demo
+        app: c-demo
     spec:
       containers:
-      - name: c_demo
-        image: rushikesh196/c_demo
+      - name: c-demo
+        image: rushikesh196/c-demo
         ports:
         - containerPort: 5000
