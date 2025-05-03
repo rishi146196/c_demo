@@ -1,10 +1,10 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: c_demo
+  name: c-demo
 spec:
   selector:
-    app: c_demo
+    app: c-demo
   ports:
   - protocol: TCP
     port: 80
