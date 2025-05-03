@@ -6,6 +6,7 @@ pipeline {
     environment {
         IMAGE_NAME = "c_demo"
         DOCKER_REGISTRY = "rushikesh196/c_demo"
+        KUBECONFIG = 'C:/Users/dell/.kube/config' // Set the KUBECONFIG path to where your kubeconfig file is located
     }
 
     stages {
@@ -37,7 +38,6 @@ pipeline {
             steps {
                 bat 'kubectl apply -f k8s\\deployment.yaml'
                 bat 'kubectl apply -f k8s\\service.yaml'
-
             }
         }
     }
