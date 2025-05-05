@@ -124,7 +124,7 @@ def make_json_serializable(obj):
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return render_template("index.html")
 
 @app.route('/get-location', methods=['POST'])
 def get_location():
