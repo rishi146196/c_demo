@@ -20,6 +20,15 @@ pipeline {
             }
         }
 
+        stage('Install ArgoCD CLI') {
+            steps {
+                bat '''
+                curl -LO https://github.com/argoproj/argo-cd/releases/download/v2.4.9/argocd-windows-amd64.exe
+                move argocd-windows-amd64.exe C:\\Windows\\System32\\argocd.exe
+                '''
+            }
+        }
+
         stage('Build Docker Image') {
             steps {
                 bat 'docker build -t %DOCKER_REGISTRY%:%DOCKER_TAG% .'
@@ -29,15 +38,21 @@ pipeline {
         stage('Push to Docker Hub') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-                    // Retry docker push up to 3 times if it fails
                     retry(3) {
                         bat '''
                         echo %PASSWORD% | docker login -u %USERNAME% --password-stdin
-                        docker tag %DOCKER_REGISTRY%:%DOCKER_TAG% %DOCKER_REGISTRY%:%DOCKER_TAG%
                         docker push %DOCKER_REGISTRY%:%DOCKER_TAG%
                         '''
                     }
                 }
+            }
+        }
+
+        stage('Set Kubernetes Context') {
+            steps {
+                bat '''
+                kubectl config use-context docker-desktop
+                '''
             }
         }
 
