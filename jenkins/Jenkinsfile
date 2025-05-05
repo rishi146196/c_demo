@@ -7,6 +7,10 @@ pipeline {
         IMAGE_NAME = "c_demo"
         DOCKER_REGISTRY = "rushikesh196/c_demo"
         KUBECONFIG = 'C:/Users/dell/.kube/config' // Path to kubeconfig for Windows/WSL
+        DOCKER_TAG = "latest"  // Tag your image as "latest" or based on build number/commit hash
+        K8S_DEPLOYMENT_NAME = "c-demo"  // Your Kubernetes Deployment name
+        K8S_NAMESPACE = "default"  // Ensure this matches your Kubernetes namespace
+        ARGOCD_APP_NAME = "c-demo"  // Your ArgoCD application name
     }
 
     stages {
@@ -18,7 +22,7 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                bat 'docker build -t %IMAGE_NAME% .'
+                bat 'docker build -t %DOCKER_REGISTRY%:%DOCKER_TAG% .'
             }
         }
 
@@ -29,11 +33,19 @@ pipeline {
                     retry(3) {
                         bat '''
                         echo %PASSWORD% | docker login -u %USERNAME% --password-stdin
-                        docker tag %IMAGE_NAME% %DOCKER_REGISTRY%
-                        docker push %DOCKER_REGISTRY%
+                        docker tag %DOCKER_REGISTRY%:%DOCKER_TAG% %DOCKER_REGISTRY%:%DOCKER_TAG%
+                        docker push %DOCKER_REGISTRY%:%DOCKER_TAG%
                         '''
                     }
                 }
+            }
+        }
+
+        stage('Update Kubernetes Deployment') {
+            steps {
+                bat '''
+                kubectl set image deployment/%K8S_DEPLOYMENT_NAME% %K8S_DEPLOYMENT_NAME%=%DOCKER_REGISTRY%:%DOCKER_TAG% -n %K8S_NAMESPACE%
+                '''
             }
         }
 
@@ -41,6 +53,14 @@ pipeline {
             steps {
                 bat 'kubectl apply -f k8s\\deployment.yaml'
                 bat 'kubectl apply -f k8s\\service.yaml'
+            }
+        }
+
+        stage('Sync with ArgoCD') {
+            steps {
+                bat '''
+                argocd app sync %ARGOCD_APP_NAME% -n argocd
+                '''
             }
         }
     }
