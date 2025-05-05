@@ -60,9 +60,7 @@ stages {
 
     stage('Sync with ArgoCD') {
         steps {
-            bat 'C:/Users/dell/argocd.exe app sync c-demo --namespace argocd --insecure'
-
-
+            bat 'C:/Users/dell/argocd.exe app sync c-demo --insecure'
 
             bat '''
             argocd app sync %ARGOCD_APP_NAME% -n argocd
