@@ -2981,4 +2981,4 @@ def check_if_property_related(text):
 
 if __name__ == '__main__':
     # Run Flask app
-    app.run(host='0.0.0.0', port=8000, debug=True, use_reloader=False)
+    app.run(host='0.0.0.0', port=5000, debug=True, use_reloader=False)
