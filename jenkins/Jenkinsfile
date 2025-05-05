@@ -3,7 +3,7 @@ agent {
 label 'docker' // Jenkins agent label
 }
 
-```
+
 environment {
     IMAGE_NAME = "c_demo"
     DOCKER_REGISTRY = "rushikesh196/c_demo"
@@ -75,6 +75,6 @@ post {
         echo '✅ Deployment successful.'
     }
 }
-```
+
 
 }
