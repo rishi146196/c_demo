@@ -65,8 +65,8 @@ stages {
             bat 'C:/Users/dell/argocd.exe app sync c-demo --insecure'
 
             bat '''
-            argocd app sync %ARGOCD_APP_NAME% -n argocd
-            '''
+                C:/Users/dell/argocd.exe app sync %ARGOCD_APP_NAME% -n argocd
+                '''
         }
     }
 }
