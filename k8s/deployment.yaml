@@ -15,6 +15,6 @@ spec:
     spec:
       containers:
       - name: c-demo
-        image: rushikesh196/c_demo
+        image: rushikesh196/c-demo
         ports:
         - containerPort: 5000
