@@ -4,11 +4,14 @@ WORKDIR /app
 
 COPY requirements.txt .
 
+# First install dependencies
+
 RUN pip install --no-cache-dir -r requirements.txt
 
-RUN python -m spacy download en_core_web_sm
+# Then download the spaCy model
 
-# Copy everything (must include the templates/ folder)
+RUN python -m spacy download en\_core\_web\_sm
+
 COPY . .
 
-CMD ["python", "app.py"]
+CMD \["python", "app.py"]
