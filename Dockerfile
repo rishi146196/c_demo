@@ -14,4 +14,4 @@ RUN python -m spacy download en\_core\_web\_sm
 
 COPY . .
 
-CMD \["python", "app.py"]
+CMD ["python", "app.py"]
