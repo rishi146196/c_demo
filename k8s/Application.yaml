@@ -12,7 +12,7 @@ spec:
     path: k8s
 
   destination:
-    server: https://kubernetes.default.svc
+    name: docker-desktop  # Use name for the cluster context
     namespace: default
 
   syncPolicy:
