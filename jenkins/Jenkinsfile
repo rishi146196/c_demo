@@ -61,7 +61,7 @@ stages {
     stage('Sync with ArgoCD') {
         steps {
 
-            bat 'C:/Users/dell/argocd.exe login localhost:8081 --username admin --password e81T7CmVf2QGJd-z --insecure' 
+            bat 'C:/Users/dell/argocd.exe login localhost:8081 --username admin --password hCbi-bTDttG2eqlX --insecure' 
             bat 'C:/Users/dell/argocd.exe app sync c-demo --insecure'
 
             
