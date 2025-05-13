@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: c-demo
-  namespace: default  # Added namespace here
+  namespace: default  # Ensure this matches your namespace
 spec:
   replicas: 2
   selector:
@@ -15,6 +15,14 @@ spec:
     spec:
       containers:
       - name: c-demo
-        image: rushikesh196/c_demo
+        image: rushikesh196/c_demo:latest  # Specify tag if needed
+        imagePullPolicy: Always  # Always pull the image on deployment
         ports:
         - containerPort: 5000
+        resources:  # Optional: define resources for your container
+          requests:
+            memory: "64Mi"
+            cpu: "250m"
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
