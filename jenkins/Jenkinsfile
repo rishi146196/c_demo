@@ -62,7 +62,7 @@ pipeline {
                 // Use Jenkins' 'withCredentials' to securely inject the password into the pipeline
                 withCredentials([string(credentialsId: 'gcp-argocd-password', variable: 'ARGOCD_PASSWORD')]) {
                     bat """
-                        C:/Users/dell/argocd.exe login 34.132.43.140:443 --username admin --password %ARGOCD_PASSWORD% --insecure
+                        C:/Users/dell/argocd.exe login 34.132.43.140:443 --username admin --password dsk4r0tVukshcY3E --insecure
                         C:/Users/dell/argocd.exe app sync c-demo --insecure
                     """
                 }
