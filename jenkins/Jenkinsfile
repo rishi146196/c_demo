@@ -43,6 +43,7 @@ pipeline {
 
         stage('Update Kubernetes Deployment') {
             steps {
+                // Update Kubernetes deployment image with the new Docker image
                 bat '''
                 kubectl set image deployment/%K8S_DEPLOYMENT_NAME% %K8S_DEPLOYMENT_NAME%=%DOCKER_REGISTRY%:%DOCKER_TAG% -n %K8S_NAMESPACE%
                 '''
