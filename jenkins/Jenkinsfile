@@ -49,13 +49,7 @@ pipeline {
             }
         }
 
-        stage('Update Kubernetes Deployment') {
-            steps {
-                bat '''
-                    kubectl set image deployment/%K8S_DEPLOYMENT_NAME% %K8S_DEPLOYMENT_NAME%=%DOCKER_REGISTRY%:%DOCKER_TAG% -n %K8S_NAMESPACE%
-                '''
-            }
-        }
+        
 
         stage('Sync with ArgoCD') {
             steps {
