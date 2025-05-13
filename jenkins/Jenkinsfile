@@ -6,11 +6,13 @@ pipeline {
     environment {
         IMAGE_NAME = "c_demo"
         DOCKER_REGISTRY = "rushikesh196/c_demo"
-        KUBECONFIG = 'C:/Users/dell/.kube/config' // Path to kubeconfig for Windows/WSL
         DOCKER_TAG = "latest"  // Tag your image as "latest" or based on build number/commit hash
         K8S_DEPLOYMENT_NAME = "c-demo"  // Your Kubernetes Deployment name
         K8S_NAMESPACE = "default"  // Ensure this matches your Kubernetes namespace
         ARGOCD_APP_NAME = "c-demo"  // Your ArgoCD application name
+        GKE_CLUSTER = "c-demo-cluster"
+        GKE_ZONE = "us-central1-a"
+        GCP_PROJECT = "ai-chatbot-459410"
     }
 
     stages {
@@ -29,7 +31,6 @@ pipeline {
         stage('Push to Docker Hub') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-                    // Retry docker push up to 3 times if it fails
                     retry(3) {
                         bat '''
                             echo %PASSWORD% | docker login -u %USERNAME% --password-stdin
@@ -41,6 +42,12 @@ pipeline {
             }
         }
 
+        stage('Configure GKE Credentials') {
+            steps {
+                bat 'gcloud container clusters get-credentials %GKE_CLUSTER% --zone %GKE_ZONE% --project %GCP_PROJECT%'
+            }
+        }
+
         stage('Deploy to k8s') {
             steps {
                 bat 'kubectl apply -f k8s\\deployment.yaml'
@@ -49,13 +56,11 @@ pipeline {
             }
         }
 
-        
-
         stage('Sync with ArgoCD') {
             steps {
                 withCredentials([string(credentialsId: 'gcp-argocd-password', variable: 'ARGOCD_PASSWORD')]) {
                     bat '''
-                        C:/Users/dell/argocd.exe login 34.132.43.140:443 --username admin --password dsk4r0tVukshcY3E --insecure
+                        C:/Users/dell/argocd.exe login 34.132.43.140:443 --username admin --password %ARGOCD_PASSWORD% --insecure
                         C:/Users/dell/argocd.exe app sync c-demo --insecure
                     '''
                 }
