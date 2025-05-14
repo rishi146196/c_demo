@@ -41,6 +41,18 @@ pipeline {
                 }
             }
         }
+        stage('Authenticate with GCP') {
+    steps {
+        withCredentials([file(credentialsId: 'gcp-service-account', variable: 'GCP_KEY')]) {
+            bat """
+                gcloud auth activate-service-account --key-file=D:/Downloads_Ddrive/ai-chatbot-459410-d67f11373829.json 
+                gcloud config set project ai-chatbot-459410
+                gcloud config set compute/zone us-central1-a
+            """
+        }
+    }
+}
+
 
         stage('Configure GKE Credentials') {
             steps {
