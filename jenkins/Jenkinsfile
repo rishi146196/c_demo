@@ -72,7 +72,7 @@ pipeline {
             steps {
                 withCredentials([string(credentialsId: 'gcp-argocd-password', variable: 'ARGOCD_PASSWORD')]) {
                     bat '''
-                        C:/Users/dell/argocd.exe login 34.132.43.140:443 --username admin --password %ARGOCD_PASSWORD% --insecure
+                        C:/Users/dell/argocd.exe login 34.135.24.127:443 --username admin --password %ARGOCD_PASSWORD% --insecure
                         C:/Users/dell/argocd.exe app sync %ARGOCD_APP_NAME% --insecure
                     '''
                 }
