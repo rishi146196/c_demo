@@ -10,9 +10,8 @@ pipeline {
         K8S_DEPLOYMENT_NAME = "c-demo"
         K8S_NAMESPACE = "default"
         ARGOCD_APP_NAME = "c-demo"
-        GKE_CLUSTER = "c-demo-cluster"
-        GKE_ZONE = "us-central1-a"
-        GCP_PROJECT = "ai-chatbot-459410"
+        AKS_CLUSTER = "c-demo-aks"              // Your AKS cluster name
+        AKS_RESOURCE_GROUP = "c-demo-rg"        // Your AKS resource group
     }
 
     stages {
@@ -42,25 +41,24 @@ pipeline {
             }
         }
 
-        stage('Authenticate with GCP') {
+        stage('Authenticate with Azure') {
             steps {
-                withCredentials([file(credentialsId: 'gcp-service-account', variable: 'GCP_KEY')]) {
+                withCredentials([azureServicePrincipal(credentialsId: 'azure-sp-credentials', subscriptionIdVariable: 'AZ_SUBSCRIPTION_ID', clientIdVariable: 'AZ_CLIENT_ID', clientSecretVariable: 'AZ_CLIENT_SECRET', tenantIdVariable: 'AZ_TENANT_ID')]) {
                     bat '''
-                        gcloud auth activate-service-account --key-file=%GCP_KEY%
-                        gcloud config set project %GCP_PROJECT%
-                        gcloud config set compute/zone %GKE_ZONE%
+                        az login --service-principal -u %AZ_CLIENT_ID% -p %AZ_CLIENT_SECRET% --tenant %AZ_TENANT_ID%
+                        az account set --subscription %AZ_SUBSCRIPTION_ID%
                     '''
                 }
             }
         }
 
-        stage('Configure GKE Credentials') {
+        stage('Configure AKS Credentials') {
             steps {
-                bat 'gcloud container clusters get-credentials %GKE_CLUSTER% --zone %GKE_ZONE% --project %GCP_PROJECT%'
+                bat 'az aks get-credentials --resource-group %AKS_RESOURCE_GROUP% --name %AKS_CLUSTER%'
             }
         }
 
-        stage('Deploy to k8s') {
+        stage('Deploy to AKS') {
             steps {
                 bat 'kubectl apply -f k8s\\deployment.yaml'
                 bat 'kubectl apply -f k8s\\service.yaml'
