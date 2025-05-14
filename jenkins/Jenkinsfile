@@ -6,10 +6,10 @@ pipeline {
     environment {
         IMAGE_NAME = "c_demo"
         DOCKER_REGISTRY = "rushikesh196/c_demo"
-        DOCKER_TAG = "latest"  // Tag your image as "latest" or based on build number/commit hash
-        K8S_DEPLOYMENT_NAME = "c-demo"  // Your Kubernetes Deployment name
-        K8S_NAMESPACE = "default"  // Ensure this matches your Kubernetes namespace
-        ARGOCD_APP_NAME = "c-demo"  // Your ArgoCD application name
+        DOCKER_TAG = "latest"
+        K8S_DEPLOYMENT_NAME = "c-demo"
+        K8S_NAMESPACE = "default"
+        ARGOCD_APP_NAME = "c-demo"
         GKE_CLUSTER = "c-demo-cluster"
         GKE_ZONE = "us-central1-a"
         GCP_PROJECT = "ai-chatbot-459410"
@@ -41,18 +41,18 @@ pipeline {
                 }
             }
         }
-        stage('Authenticate with GCP') {
-    steps {
-        withCredentials([file(credentialsId: 'gcp-service-account', variable: 'GCP_KEY')]) {
-            bat """
-                gcloud auth activate-service-account --key-file=D:/Downloads_Ddrive/ai-chatbot-459410-d67f11373829.json 
-                gcloud config set project ai-chatbot-459410
-                gcloud config set compute/zone us-central1-a
-            """
-        }
-    }
-}
 
+        stage('Authenticate with GCP') {
+            steps {
+                withCredentials([file(credentialsId: 'gcp-service-account', variable: 'GCP_KEY')]) {
+                    bat '''
+                        gcloud auth activate-service-account --key-file=%GCP_KEY%
+                        gcloud config set project %GCP_PROJECT%
+                        gcloud config set compute/zone %GKE_ZONE%
+                    '''
+                }
+            }
+        }
 
         stage('Configure GKE Credentials') {
             steps {
@@ -73,7 +73,7 @@ pipeline {
                 withCredentials([string(credentialsId: 'gcp-argocd-password', variable: 'ARGOCD_PASSWORD')]) {
                     bat '''
                         C:/Users/dell/argocd.exe login 34.132.43.140:443 --username admin --password %ARGOCD_PASSWORD% --insecure
-                        C:/Users/dell/argocd.exe app sync c-demo --insecure
+                        C:/Users/dell/argocd.exe app sync %ARGOCD_APP_NAME% --insecure
                     '''
                 }
             }
