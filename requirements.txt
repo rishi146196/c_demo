@@ -1,7 +1,7 @@
 flask==2.0.1
 werkzeug==2.0.1
 flask-cors==3.0.10
-torch==1.9.0
+torch
 transformers==4.11.3
 pillow==8.3.1
 pymupdf==1.18.14
